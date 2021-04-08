@@ -1,0 +1,15 @@
+.shop {
+    min-height: 1000px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.shop-title {
+    text-align: center;
+    margin-top: 60px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+

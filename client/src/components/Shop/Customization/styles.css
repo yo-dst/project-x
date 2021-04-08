@@ -1,0 +1,51 @@
+.custom-card {
+    width: 65%;
+    margin-top: 50px;
+    box-shadow: 0px 0px 10px 1px black;
+    border-radius: 7%;
+}
+
+.custom-card-header {
+    text-align: center;
+    font-weight: 600;
+    letter-spacing: 1px;
+    font-size: 19px;
+}
+.custom-card-body {
+
+}
+
+.custom-card-title {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    text-align: center;
+    letter-spacing: 1px;
+    font-size: 23px;
+}
+
+.custom-form-row {
+    margin-top: 30px;
+    display: flex;
+    align-items: center;
+    
+
+}
+
+.checkbox-label {
+    margin-left: 5px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.checkbox-label-blue {
+    background-color: blue;
+}
+
+.checkbox-label-red {
+    background-color: red;
+}
+
+.checkbox-label-green {
+    background-color: green;
+}

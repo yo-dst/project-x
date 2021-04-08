@@ -1,0 +1,10 @@
+.contact {
+    min-height: 500px;
+}
+
+.contact-title {
+    text-align: center;
+    margin-top: 60px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
