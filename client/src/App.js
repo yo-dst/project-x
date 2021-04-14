@@ -8,6 +8,9 @@ import Shop from "./components/Shop/Shop";
 import FAQ from "./components/FAQ/FAQ";
 import Contact from "./components/Contact/Contact";
 import Test from "./components/Test/Test";
+import Avis from "./components/Avis/Avis";
+import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
 import "./styles.css";
 import { CSSTransition } from "react-transition-group";
 
@@ -18,16 +21,24 @@ const   App = () => {
             <div>
                 <Header />
                 <Switch>
-                    <Route path="/home" component={Home} />
                     <Route path="/shop" component={Shop} />
+                    <Route path="/avis" component={Avis} />
                     <Route path="/FAQ" component={FAQ} />
                     <Route path="/contact" component={Contact} />
-                    <Redirect to="/home" />
+                    <Route path="/login" component={Login} />
+                    <Route path="/register" component={Register} />
+                    <Redirect to="/shop" />
                 </Switch>
                 <Footer />
             </div>
         //</Provider>
     );
 };
+
+const   App2 = () => {
+    return (
+        <Test />
+    );
+}
 
 export default App;

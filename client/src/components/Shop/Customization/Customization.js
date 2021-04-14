@@ -4,12 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons"
 import "./styles.css"
 
-const   renderColor = (color) => {
-    return (
-        <div className={`checkbox-label checkbox-label-${color}`}></div>
-    );
-}
-
 const   CustomForm = (props) => {
     const [descriptionFileName, setDescriptionFileName] = useState("Télécharger une image");
     const [locationFileName, setLocationFileName] = useState("Télécharger une image");
@@ -40,9 +34,8 @@ const   CustomForm = (props) => {
                     <Form.Text style={{fontSize: "15px"}}>et/ou</Form.Text>
                 </Col>
                 <Col md={4}>
-                    <Form.Group style={{margin: "0px"}}>
+                    <Form.Group controlId="artworkDescriptionFile" style={{margin: "0px"}}>
                         <Form.File
-                            id="artworkDescriptionFile" 
                             label={descriptionFileName}
                             data-browse="Parcourir"
                             custom
@@ -75,9 +68,8 @@ const   CustomForm = (props) => {
                     <Form.Text style={{fontSize: "15px"}}>et/ou</Form.Text>
                 </Col>
                 <Col md={4}>
-                    <Form.Group style={{margin: "0px"}}>
-                        <Form.File 
-                            id="artworkLocationFile" 
+                    <Form.Group controlId="artworkLocationFile"  style={{margin: "0px"}}>
+                        <Form.File
                             label={locationFileName}
                             data-browse="Parcourir" 
                             custom
@@ -87,23 +79,52 @@ const   CustomForm = (props) => {
                 </Col>
             </Form.Row>
             <Form.Row className="custom-form-row">
-                <Col md={{offset: 1}}>
-                        
-                    {/*<Form.Group controlId="artworkColors">
-                        <Form.Label>Couleurs principales</Form.Label>
-    
-                        <div key="inline-checkbox">
-                            <Form.Check inline label={renderColor("blue")} type="checkbox" id="custom-color-blue" /> 
-                            <Form.Check inline label={renderColor("red")} type="checkbox" id="custom-color-red" /> 
-                            <Form.Check inline label={renderColor("green")} type="checkbox" id="custom-color-green" /> 
+                <Col md={{span: 8, offset: 1}}>
+                    <Form.Group controlId="artworkColors">
+                        <Form.Label>
+                            Couleur(s) principale(s)
+                            <OverlayTrigger
+                                key="colorsTooltip"
+                                placement="right"
+                                overlay={
+                                    <Tooltip id="tooltipColors">
+                                        Blablabla
+                                    </Tooltip>
+                                }
+                            >
+                                <FontAwesomeIcon icon={faInfoCircle} size="1x" style={{marginLeft: "10px"}} />
+                            </OverlayTrigger>
+                        </Form.Label>
+                        <div> {/* Penser à key with map + rendre accessible les couleurs par l'admin */}
+                            {["red", "blue", "green", "black", "white", "yellow"].map((color) => (
+                                <Form.Check inline>
+                                    <Form.Check.Input type="checkbox" style={{display: "none"}} />
+                                    <Form.Check.Label>
+                                        <Button style={{background: `${color}`}} className="checkbox-label"></Button>
+                                    </Form.Check.Label>
+                                </Form.Check>
+                            ))}
                         </div>
-                            </Form.Group>*/}
+                    </Form.Group>
                 </Col>
             </Form.Row>
-            <Form.Row className="custom-form-row" style={{background: "green"}}>
-                <Col md={{span: 4, offset: 1}}>
+            <Form.Row className="custom-form-row">
+                <Col md={{span: 2, offset: 1}}>
                     <Form.Group controlId="artworkSize">
-                        <Form.Label>Dimensions</Form.Label>
+                        <Form.Label>
+                            Dimensions
+                            <OverlayTrigger
+                                key="sizeTooltip"
+                                placement="right"
+                                overlay={
+                                    <Tooltip id="tooltipSize">
+                                        Blablabla
+                                    </Tooltip>
+                                }
+                            >
+                                <FontAwesomeIcon icon={faInfoCircle} size="1x" style={{marginLeft: "10px"}} />
+                            </OverlayTrigger>
+                        </Form.Label>
                         <Form.Control as="select" onChange={props.handleSelectChange}>
                                 <option value="20">20 x 20 (cm)</option>
                                 <option value="40">40 x 40 (cm)</option>
@@ -111,66 +132,23 @@ const   CustomForm = (props) => {
                         </Form.Control>
                     </Form.Group>
                 </Col>
-                <Col md={{span: 3}} style={{background: "red"}}>
-                    <div>20 €</div>
-                </Col>
             </Form.Row>
-            <Form.Row style={{marginTop: "60px", justifyContent: "center"}}>
-                <Form.Group>
-                    <Button type="submit" style={{marginRight: "10px"}}>Ajouter au panier</Button>
-                    <Button type="submit" style={{marginLeft: "10px"}}>Sauvegarder</Button>
-                </Form.Group>    
+            <Form.Row style={{marginTop: "60px"}}>
+                <Col md={{span: 6, offset: 1}}>
+                    <Form.Group>
+                        <Button type="submit" style={{marginRight: "10px"}}>Ajouter au panier</Button>
+                        <Button type="submit" style={{marginLeft: "10px"}}>Sauvegarder</Button>
+                    </Form.Group>    
+                </Col>
+                <Col md={{span: 2, offset: 2}} style={{display: "flex", justifyContent: "end"}}>
+                    <Form.Group>
+                        <Button type="button" style={{}}>Prix: 20€</Button>
+                    </Form.Group>
+                </Col>
             </Form.Row>
         </Form>
     )
 }
-
-/*
-const   CustomFormPrec = (props) => {
-    return (
-        <Form>
-            <Form.Group as={Row} controlId="artworkSize">
-                <Form.Label column md={2}>Dimensions</Form.Label>
-                <Col md={2}>
-                    <Form.Control as="select" onChange={props.handleSelectChange}>
-                        <option value="20">20 x 20 (cm)</option>
-                        <option value="40">40 x 40 (cm)</option>
-                        <option value="80">80 x 80 (cm)</option>
-                    </Form.Control>
-                </Col>
-            </Form.Group>
-            <Form.Group as={Row} controlId="artworkDescription">
-                <Form.Label column md={2}>Description</Form.Label>
-                <Col md={9}>
-                    <Form.Control as="textarea" rows={2}></Form.Control>
-                </Col>
-            </Form.Group>
-            <Form.Group as={Row} controlId="artworkColors">
-                <Form.Label column md={2}>Couleurs principales</Form.Label>
-                <div key="inline-checkbox">
-                    <Form.Check inline label={renderColor("blue")} type="checkbox" id="custom-color-blue" /> 
-                    <Form.Check inline label={renderColor("red")} type="checkbox" id="custom-color-red" /> 
-                    <Form.Check inline label={renderColor("green")} type="checkbox" id="custom-color-green" /> 
-                </div>
-            </Form.Group>
-            <Form.Group as={Row} controlId="artworkLocation">
-                <Form.Label column md={2}>Emplacement</Form.Label>
-                <Col md={3}>
-                    <Form.File id="locationImg" label="" />
-                </Col>
-                <Col md={6}>
-                    <Form.Control as="textarea" rows={2}></Form.Control>
-                </Col>
-            </Form.Group>
-            <Form.Group as={Row}>
-                <Col xs={{offset: 2}}>
-                    <Button type="submit">Ajouter au panier</Button>
-                </Col>
-            </Form.Group>
-        </Form>
-    );
-};
-*/
 
 const   Price = (selectedValue) => {
     let price;

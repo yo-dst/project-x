@@ -1,16 +1,17 @@
-.contact {
+.register {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 60px;
+    min-height: 600px;
 }
 
-.contact-title {
+.register-title {
     letter-spacing: 3px;
     text-transform: uppercase;
     margin-bottom: 50px;
 }
 
-.contact-form {
-    width: 60%;
+.register-form {
+    width: 35%;
 }

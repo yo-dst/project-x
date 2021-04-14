@@ -1,8 +1,12 @@
 import React from "react";
+import "./styles.css";
 
 const   FAQ = () => {
     return (
-        <h1>FAQ</h1>
+        <div className="faq">
+            <h2 className="faq-title">FAQ</h2>
+        </div>
+        
     );
 };
 

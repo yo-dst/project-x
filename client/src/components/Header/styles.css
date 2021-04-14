@@ -24,18 +24,20 @@
     align-items: center;
 }
 
+.navbar-nav {
+    margin-right: 15px;
+    width: 500px;
+}
+
 .navbar-nav ul {
     margin: 0;
     display: flex;
-    margin-right: 30px;
     list-style: none;
     letter-spacing: 2px;
+    justify-content: space-around;
+    width: 100%;
 }
 
-.navbar-nav li {
-    width: 90px;
-    text-align: center;
-}
 
 .navbar-nav a {
     color: black;
@@ -53,6 +55,14 @@
 }
 
 .user-button a:hover {
+    color: black;
+}
+
+.card-button {
+    margin-right: 30px;
+}
+
+.card-button a {
     color: black;
 }
 
@@ -117,7 +127,7 @@
 }
 
 @media screen and (max-width: 768px) {
-    .navbar-right ul {
+    .navbar-nav {
         display: none;
     }
     .toggle-button {
