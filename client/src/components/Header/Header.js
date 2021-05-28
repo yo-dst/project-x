@@ -6,12 +6,15 @@ import { faBars, faTimes, faShoppingBag } from "@fortawesome/free-solid-svg-icon
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import "./styles.css";
 import { CSSTransition } from "react-transition-group";
+import { useSelector } from "react-redux";
 
 const   Navbar = (props) => {
+    const user = useSelector((state) => state.user);
+
     return (
         <div className="navbar">
             <div className="navbar-left">
-                <NavLink to="/home">The Brand</NavLink>
+                <NavLink to="/shop">The Brand</NavLink>
             </div>
             <div className="navbar-right">
                 <div className="navbar-nav">
@@ -45,7 +48,7 @@ const   Navbar = (props) => {
                     </NavLink>
                 </div>
                 <div className="user-button">
-                    <NavLink to="/login">
+                    <NavLink to={user.user ? "/account" : "/login"}>
                         <FontAwesomeIcon icon={faUser} size="2x" />
                     </NavLink>
                 </div>
