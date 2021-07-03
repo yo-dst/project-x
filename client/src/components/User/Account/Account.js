@@ -10,10 +10,13 @@ const Account = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
 
-    const handleLogout = () => {
-        logout()
-            .then((res) => dispatch(delUser()))
-            .catch((err) => console.log(err));
+    const handleLogout = async () => {
+        try {
+            await logout();
+            dispatch(delUser());
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     if (user.isLoading) {

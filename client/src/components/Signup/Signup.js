@@ -3,16 +3,16 @@ import { Form, Col, Button } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 
 import "./styles.css";
-import { register } from "../../api/index";
+import { signup } from "../../api/index";
 
-const   Register = () => {
+const   Signup = () => {
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const history = useHistory();
 
-    const handleRegister = (event) => {
+    const handleSignup = (event) => {
         event.preventDefault();
 
         let userData = {
@@ -22,20 +22,20 @@ const   Register = () => {
             password: password
         };
 
-        register(userData)
-            .then((data) => {
-                if (data.success)
-                    history.push("/login");
-                else 
-                    setPassword("");
-            })
-            .catch((err) => console.log(err));
+        signup(userData)
+        .then((data) => {
+            if (data.success)
+                history.push("/login");
+            else 
+                setPassword("");
+        })
+        .catch((err) => console.log(err));
     }
 
     return (
         <div className="register">
             <h2 className="register-title">Créer un compte</h2>
-            <Form className="register-form" onSubmit={handleRegister}>
+            <Form className="register-form" onSubmit={handleSignup}>
                 <Form.Row>
                     <Col>
                         <Form.Group controlId="registerFormFirstname">
@@ -92,4 +92,4 @@ const   Register = () => {
     );
 };
 
-export default Register;
+export default Signup;

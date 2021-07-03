@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Col, Button } from "react-bootstrap";
 import { NavLink, Router, useHistory } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import "./styles.css";
 import { login } from "../../api/index";
@@ -10,9 +10,36 @@ import { addUser } from "../../actions/user";
 const   Login = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const history = useHistory();
     const dispatch = useDispatch();
+    const user = useSelector((state) => state.user);
 
+    useEffect(() => {
+        if (user.user)
+            history.push("/account");
+    }, [user.user]);
+
+    const handleLogin = async (e) => {
+        try {
+            e.preventDefault();
+            let data = await login(email, password);
+            if (!data.success)
+            {
+                setPassword("");
+                setError(data.message);
+            }
+            else {
+                localStorage.setItem("accessToken", data.accessToken);
+                dispatch(addUser());
+                history.push("/account");
+            }
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
+    /*
     const handleLogin = (event) => {
         event.preventDefault();
         login(email, password)
@@ -27,10 +54,12 @@ const   Login = () => {
             })
             .catch((err) => console.log(err));
     } 
+    */
     
     return (
         <div className="login">
             <h2 className="login-title">Connectez-vous</h2>
+            {error}
             <Form className="login-form" onSubmit={handleLogin}>
                 <Form.Row>
                     <Col>

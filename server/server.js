@@ -8,7 +8,7 @@ import config  from "./config.js";
 import { corsOptions } from "./config.js";
 import { headers } from "./middlewares/headers.js";
 import testRouter from "./routes/test.js";
-import userRouter from "./routes/user.js";
+import authRouter from "./routes/auth.js";
 
 dotenv.config();
 
@@ -41,7 +41,7 @@ app.get("/getCookie", (req, res) => {
 });
 
 app.use("/", testRouter);
-app.use("/user", userRouter);
+app.use("/auth", authRouter);
 
 /* errors handler
 app.use((error, req, res, next) => {
