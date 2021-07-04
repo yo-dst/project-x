@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { delUser } from "../../../actions/user";
 import { logout } from "../../../api/index";
 
-const Account = () => {
+const Account = (props) => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.user);
 

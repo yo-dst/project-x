@@ -17,7 +17,7 @@ export const getUser = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        let user =  await User.findOne({email: req.body.email});
+        let user = await User.findOne({email: req.body.email});
         if (!user)
             return res.status(404).send({success: false, message: "The user does not exist."});
         let pwdIsValid = bcrypt.compareSync(req.body.password, user.password);

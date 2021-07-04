@@ -19,24 +19,14 @@ import { addUser } from "./actions/user";
 
 const   App = () => {
     const dispatch = useDispatch();
-    const history = useHistory();
 
     useEffect(() => {
         dispatch(addUser());
-        /*
-        window.addEventListener("storage", (event) => 
-        {
-            console.log("here mdr");
-            if (event.key == "logout")
-            {
-                console.log("mais nan");
-                history.push("/login");
-            }
-        });*/
     }, []);
 
     return (
             <div>
+
                 <Header />
                 <Switch>
                     <Route path="/shop" component={Shop} />
@@ -52,11 +42,5 @@ const   App = () => {
             </div>
     );
 };
-
-const   App2 = () => {
-    return (
-        <Test />
-    );
-}
 
 export default App;
