@@ -6,9 +6,9 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import config  from "./config.js";
 import { corsOptions } from "./config.js";
-import { headers } from "./middlewares/headers.js";
-import testRouter from "./routes/test.js";
-import authRouter from "./routes/auth.js";
+import authRouter from "./routes/authRouter.js";
+import { authenticate } from "./middlewares/authenticate.js"
+import User from "./models/user.js";
 
 dotenv.config();
 
@@ -20,7 +20,6 @@ app.use(express.urlencoded({extended: true}));
 app.use(cors(corsOptions));
 
 //my middlewares -----------------------------------
-app.use(headers);
 
 //my routes -----------------------------------
 app.get("/delCookie", (req, res) => {
@@ -40,8 +39,20 @@ app.get("/getCookie", (req, res) => {
     return res.status(200).send({msg: "No cookie."});
 });
 
-app.use("/", testRouter);
 app.use("/auth", authRouter);
+app.get("/user", authenticate, async (req, res) => {
+    try {
+        console.log(req.userId);
+        let user = await User.findById(req.userId);
+        console.log(user);
+        if (!user)
+            return res.status(404).send({success: false, message: "The user does not exist."});
+        return res.status(200).send({success: true, message: "User infos sent.", user: user});
+    } catch (err) {
+        console.log(err);
+        return res.status(500).send({success: false, message: "Internal server error."});
+    }
+});
 
 /* errors handler
 app.use((error, req, res, next) => {

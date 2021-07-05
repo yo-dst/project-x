@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const url = "http://localhost:5000/";
+const url = "http://localhost:5000";
 
 const validStatusRange = (status) =>
 {
@@ -10,7 +10,7 @@ const validStatusRange = (status) =>
 export const fetchUser = async () => {
     try {
         let accessToken = localStorage.getItem("accessToken");
-        let res = await axios.get(url + "auth/", {
+        let res = await axios.get(url + "/user", {
             headers: {"Authorization": "Bearer " + accessToken},
             validateStatus: validStatusRange
         });
@@ -22,7 +22,7 @@ export const fetchUser = async () => {
 
 export const login = async (email, password) => {
     try {
-        let res = await axios.post(url + "auth/login/", {
+        let res = await axios.post(url + "/auth/login", {
             email: email,
             password: password
         }, {validateStatus: validStatusRange});
@@ -35,7 +35,7 @@ export const login = async (email, password) => {
 export const logout = async () => {
     try {
         localStorage.removeItem("accessToken");
-        let res = await axios.delete(url + "auth/logout/", {validateStatus: validStatusRange});
+        let res = await axios.delete(url + "/auth/logout", {validateStatus: validStatusRange});
         return res.data;
     } catch (err) {
         throw err;
@@ -44,7 +44,7 @@ export const logout = async () => {
 
 export const signup = async (userData) => {
     try {
-        let res = await axios.post(url + "auth/signup/", userData, {validateStatus: validStatusRange});
+        let res = await axios.post(url + "/auth/signup", userData, {validateStatus: validStatusRange});
         return res.data;
     } catch (err) {
         throw err;
@@ -52,7 +52,7 @@ export const signup = async (userData) => {
 }
 
 export const refreshToken = (refreshToken) => {
-    return fetch(url + "auth/token", {
+    return fetch(url + "/auth/token", {
         method: "POST",
         headers: {'Content-Type': 'application/json'},
         credentials: "include",

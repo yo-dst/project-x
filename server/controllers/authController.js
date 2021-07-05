@@ -4,17 +4,6 @@ import bcrypt from "bcrypt";
 import User from "../models/user.js";
 import RefreshToken from "../models/refreshToken.js";
 
-export const getUser = async (req, res) => {
-    try {
-        let user = await User.findById(req.userId);
-        if (!user)
-            return res.status(404).send({success: false, message: "The user does not exist."});
-        return res.status(200).send({success: true, message: "User infos sent.", user: user});
-    } catch (err) {
-        return res.status(500).send({success: false, message: "Internal server error."});
-    }
-};
-
 export const login = async (req, res) => {
     try {
         let user = await User.findOne({email: req.body.email});
