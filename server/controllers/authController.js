@@ -1,87 +1,85 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-import User from "../models/user.js";
-import RefreshToken from "../models/refreshToken.js";
+import UserModel from "../models/user.js";
+import RefreshTokenModel from "../models/refreshToken.js";
 
 export const login = async (req, res) => {
     try {
-        let user = await User.findOne({email: req.body.email});
+        let user = await UserModel.findOne({email: req.body.email});
         if (!user)
-            return res.status(404).send({success: false, message: "The user does not exist."});
+            return res.status(404).send({msg: "The user does not exist."});
         let pwdIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!pwdIsValid)
-            return res.status(401).send({success: false, message: "Incorrect password."});
-        let accessToken = jwt.sign({id: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30s"});
+            return res.status(401).send({msg: "Incorrect password."});
+
+        //HERE DELETE ANCIEN ACCESS TOKEN S'IL
+        
+        let accessToken = jwt.sign({id: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "1m"});
         let refreshToken = jwt.sign({id: user._id}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "7d"});
+        await RefreshTokenModel.create({token: refreshToken});
         res.cookie("refreshToken", refreshToken, {
             maxAge: 1000 * 60 * 60 * 24 * 7,
             httpOnly: true,
             secure: true,
-            sameSite: "lax"
+            sameSite: "strict"
         });
-        return res.status(200).send({
-            success: true,
-            message: "JWT sent.",
-            accessToken: accessToken
-        });
+        return res.status(200).send({msg: "JWT sent.", accessToken: accessToken});
     } catch (err) {
-        return res.status(500).send({success: false, message: "Internal server error."});
+        console.log(err);
+        return res.status(500).send({msg: "Internal server error."});
     }
 };
 
 export const signup = async (req, res) => {
     try {
         let hashedPwd = bcrypt.hashSync(req.body.password, 10);
-        let user = await User.findOne({email: req.body.email})
+        let user = await UserModel.findOne({email: req.body.email})
         if (user)
-            return res.status(403).send({success: false, message: "Email already used."});
-        user = await User.create({
+            return res.status(403).send({msg: "Email already used."});
+        await UserModel.create({
+            username: req.body.username,
             firstname: req.body.firstname,
             lastname: req.body.lastname,
             email: req.body.email,
             password: hashedPwd
         });
-        return res.status(200).send({success: true, message: "User created."});
+        return res.status(200).send({msg: "User created."});
     } catch (err) {
-        return res.status(500).send({success: false, message: "Internal server error."});
+        return res.status(500).send({msg: "Internal server error."});
     }
 };
 
 export const logout = async (req, res) => {
     try {
-        await RefreshToken.findOneAndDelete({refreshToken: req.cookies.refreshToken});
-        return res.status(200).send({success: true, message: "Successfully logged out."});
+        await RefreshTokenModel.findOneAndDelete({token: req.cookies.refreshToken});
+        return res.status(200).send();
     } catch (err) {
-        return res.status(500).send({success: false, message: "Internal server error."});
+        return res.status(500).send({msg: "Internal server error."});
     }
 };
 
-export const refreshToken = (req, res) => {
-    let refreshToken = req.cookies.refreshToken;
-    if (!refreshToken)
-        return res.status(401).send({success: false, message: "refreshToken is missing."});
-    RefreshToken.findOneAndDelete({refreshToken: refreshToken}, (err, refreshToken) => {
-        if (err)
-            return res.status(500).send({success: false, message: "Internal server error."});
-        if (!refreshToken)
-            return res.status(401).send({success: false, message: "Invalid refreshToken."});
-        jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
+export const refreshToken = async (req, res) => {
+    try {
+        let refreshToken = req.cookies.refreshToken;
+        let refreshTokenSaved = await RefreshTokenModel.findOneAndDelete({token: refreshToken});
+        if (!refreshTokenSaved)
+            return res.status(403).send({msg: "Invalid refreshToken."});
+        jwt.verify(refreshTokenSaved.token, process.env.REFRESH_TOKEN_SECRET, async (err, payload) => {
             if (err)
-                return res.status(401).send({success: false, message: "Invalid refreshToken."});
-            let newAccessToken = jwt.sign({id: user._id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "30s"});
-            let newRefreshToken = jwt.sign({id: user._id}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "7d"});
-            RefreshToken.create({refreshToken: newRefreshToken}, (err, newRefreshToken) => {
-                if (err)
-                    return res.status(500).send({success: false, message: "Internal server error."});
-                res.cookie("refreshToken", newRefreshToken, {
-                    maxAge: 1000 * 60 * 60 * 24 * 7,
-                    httpOnly: true,
-                    secure: true,
-                    sameSite: "lax"
-                });
-                return res.status(200).send({success: true, accessToken: newAccessToken});
+                return res.status(403).send({msg: "Invalid refreshToken."});
+            let newAccessToken = jwt.sign({id: payload.id}, process.env.ACCESS_TOKEN_SECRET, {expiresIn: "1m"});
+            let newRefreshToken = jwt.sign({id: payload.id}, process.env.REFRESH_TOKEN_SECRET, {expiresIn: "7d"});
+            await RefreshTokenModel.create({token: newRefreshToken});
+            res.cookie("refreshToken", newRefreshToken, {
+                maxAge: 1000 * 60 * 60 * 24 * 7,
+                httpOnly: true,
+                secure: true,
+                sameSite: "strict"
             });
+            return res.status(200).send({accessToken: newAccessToken});
         });
-    });
-};
+    } catch (err) {
+        return res.status(500).send({msg: "Internal server error."});
+    }
+}

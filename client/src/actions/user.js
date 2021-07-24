@@ -1,20 +1,31 @@
 import * as api from "../api";
 
-export const addUser = () => (dispatch) => {
-    dispatch({type: "LOADING"});
+export const login = (email, password) => async (dispatch) => {
+    try {
+        let res = await api.login(email, password);
+        localStorage.setItem("accessToken", res.data.accessToken);
+        dispatch({type: "USER_LOADING"});
+        dispatch(updateUser());
+    } catch (err) {
+        dispatch({type: "USER_FAILED", payload: err.response.data.msg});
+    }
+}
 
-    api.fetchUser()
-    .then((data) => {
-        if (data.success)
-            dispatch({type: "ADD_USER", payload: data.user});
-        else
-            dispatch({type: "FAILED", payload: data.message});
-    })
-    .catch((err) => {
-        dispatch({type: "FAILED", payload: err});
-    });
-};
+export const logout = () => async (dispatch) => {
+    try {
+        await api.logout();
+        localStorage.removeItem("accessToken");
+        dispatch({type: "LOGOUT_USER"});
+    } catch (err) {
+        dispatch({type: "USER_FAILED", payload: err.response.data.msg});
+    }
+}
 
-export const delUser = () => (dispatch) => {
-    dispatch({type: "DEL_USER"});
-};
+export const updateUser = () => async (dispatch) => {
+    try {
+        let res = await api.fetchUser();
+        dispatch({type: "UPDATE_USER", payload: res.data.user});
+    } catch (err) {
+        dispatch({type: "USER_FAILED", payload: err.response.data.msg});
+    }
+}

@@ -7,8 +7,10 @@ import dotenv from "dotenv";
 import config  from "./config.js";
 import { corsOptions } from "./config.js";
 import authRouter from "./routes/authRouter.js";
+import productsRouter from "./routes/productsRouter.js";
+import userRouter from "./routes/userRouter.js";
 import { authenticate } from "./middlewares/authenticate.js"
-import User from "./models/user.js";
+import UserModel from "./models/user.js";
 
 dotenv.config();
 
@@ -19,39 +21,31 @@ app.use(express.json({extended: true}));
 app.use(express.urlencoded({extended: true}));
 app.use(cors(corsOptions));
 
-//my middlewares -----------------------------------
+//my middlewares
+app.use(express.static("public"));
 
-//my routes -----------------------------------
-app.get("/delCookie", (req, res) => {
-    res.cookie("myCookie", "", {httpOnly: true});
-    return res.status(200).send({msg: "cookie deleted."});
-});
-
-app.get("/createCookie", (req, res) => {
-    res.cookie("myCookie", "888", {httpOnly: true});
-    return res.status(200).send({msg: "cookie created."});
-});
-
-app.get("/getCookie", (req, res) => {
-    let cookie = req.cookies.myCookie;
-    if (cookie)
-        return res.status(200).send({cookie: cookie});
-    return res.status(200).send({msg: "No cookie."});
-});
-
+// routers
 app.use("/auth", authRouter);
-app.get("/user", authenticate, async (req, res) => {
+app.use("/products", productsRouter);
+app.use("/user", userRouter);
+
+// routes
+app.get("/", (req, res) => {
+    return res.status(200).send("Server is working.");
+})
+app.get("/users", async (req, res) => {
     try {
-        console.log(req.userId);
-        let user = await User.findById(req.userId);
-        console.log(user);
-        if (!user)
-            return res.status(404).send({success: false, message: "The user does not exist."});
-        return res.status(200).send({success: true, message: "User infos sent.", user: user});
+        let users = await UserModel.find({});
+        return res.status(200).send({users: users});
     } catch (err) {
-        console.log(err);
-        return res.status(500).send({success: false, message: "Internal server error."});
+        return res.status(500).send({msg: "Internal server error."});
     }
+})
+app.get("/cookies", (req, res) => {
+    console.log("\nPrint Cookies");
+    console.log(req.cookies);
+    console.log("-----");
+    return res.status(200).send();
 });
 
 /* errors handler

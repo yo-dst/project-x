@@ -1,48 +1,41 @@
 import React, { useState } from "react";
 import { Card, Form, Row, Col, Button } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import axios from "axios";
 
+import {getProducts} from "../../api/index";
 import "./styles.css";
 import Customization from "./Customization/Customization";
 
 const   Shop = () => {
     const [val, setVal] = useState("No cookie.");
-    const url = "http://localhost:5000/";
+    const url = "http://localhost:5000";
+    const tab = ["CECI", "EST", "UN", "TEST"];
 
-    const createCookie = () => {
-        fetch(url + "createCookie", {
-            method: "GET",
-            credentials: 'include',
-        })
-            .then((res) => res.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err));
-    }
-    
-    const getCookie = () => {
-        fetch(url + "getCookie", {
-            method: "GET",
-            credentials: 'include',
-        })
-            .then((res) => res.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err));
+    const callRefreshToken = async () => {
+        try {
+            let res = await axios.post(url + "/auth/refresh_token", undefined, {withCredentials: true});
+            console.log(res.data);
+        } catch (err) {
+            console.log(err);
+        }
     }
 
-    const delCookie = () => {
-        fetch(url + "delCookie", {
-            method: "GET",
-            credentials: 'include',
-        })
-            .then((res) => res.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.log(err));
+    const printCookies = async () => {
+        try {
+            await axios.get(url + "/cookies", {withCredentials: true});
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
         <div className="shop">
-            <Button onClick={createCookie}>CREATE COOKIE</Button>
-            <Button onClick={getCookie}>GET COOKIE</Button>
-            <Button onClick={delCookie}>DEL COOKIE</Button>
+            <Button>
+                <NavLink to="/test" style={{color: "white"}} activeStyle={{borderBottom: "2px groove black"}}>TEST</NavLink>
+            </Button>
+            <Button onClick={callRefreshToken}>CALL R_JWT</Button>
+            <Button onClick={printCookies}>PRINT COOKIE</Button>
             <p>{val}</p>
             <h2 className="shop-title">Shop</h2>
             <Customization />

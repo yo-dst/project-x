@@ -6,36 +6,50 @@ import "./styles.css";
 import { signup } from "../../api/index";
 
 const   Signup = () => {
+    const [username, setUsername] = useState("");
     const [firstname, setFirstname] = useState("");
     const [lastname, setLastname] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
     const history = useHistory();
 
     const handleSignup = (event) => {
         event.preventDefault();
-
         let userData = {
+            username: username,
             firstname: firstname,
             lastname: lastname,
             email: email,
             password: password
         };
-
         signup(userData)
-        .then((data) => {
-            if (data.success)
+            .then((res) => {
                 history.push("/login");
-            else 
+            })
+            .catch((err) => {
                 setPassword("");
-        })
-        .catch((err) => console.log(err));
+                setError(err.response.data.msg);
+            });  
     }
 
     return (
         <div className="register">
             <h2 className="register-title">Créer un compte</h2>
+            {error}
             <Form className="register-form" onSubmit={handleSignup}>
+                <Form.Row>
+                        <Col>
+                            <Form.Group controlId="registerFormUsername">
+                                <Form.Label>Pseudo</Form.Label>
+                                <Form.Control
+                                    type="text"
+                                    value={username}
+                                    onChange={(event) => setUsername(event.target.value)}
+                                />
+                            </Form.Group>
+                        </Col>
+                    </Form.Row>
                 <Form.Row>
                     <Col>
                         <Form.Group controlId="registerFormFirstname">

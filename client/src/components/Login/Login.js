@@ -4,8 +4,7 @@ import { NavLink, Router, useHistory } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import "./styles.css";
-import { login } from "../../api/index";
-import { addUser } from "../../actions/user";
+import { login } from "../../actions/user";
 
 const   Login = () => {
     const [email, setEmail] = useState("");
@@ -13,53 +12,24 @@ const   Login = () => {
     const [error, setError] = useState("");
     const history = useHistory();
     const dispatch = useDispatch();
-    const user = useSelector((state) => state.user);
+    const user = useSelector(state => state.user);
 
     useEffect(() => {
-        if (user.user)
+        if (user.user || user.isLoading)
             history.push("/account");
-    }, [user.user]);
+        else if (user.err)
+            setPassword("");
+    }, [user, history]);
 
-    const handleLogin = async (e) => {
-        try {
-            e.preventDefault();
-            let data = await login(email, password);
-            if (!data.success)
-            {
-                setPassword("");
-                setError(data.message);
-            }
-            else {
-                localStorage.setItem("accessToken", data.accessToken);
-                dispatch(addUser());
-                history.push("/account");
-            }
-        } catch (err) {
-            console.log(err);
-        }
+    const handleLogin = (e) => {
+        e.preventDefault();
+        dispatch(login(email, password));
     }
 
-    /*
-    const handleLogin = (event) => {
-        event.preventDefault();
-        login(email, password)
-            .then((data) => {
-                if (data.success) {
-                    localStorage.setItem("accessToken", data.accessToken);
-                    dispatch(addUser());
-                    history.push("/account");
-                }
-                else 
-                    setPassword("");
-            })
-            .catch((err) => console.log(err));
-    } 
-    */
-    
     return (
         <div className="login">
             <h2 className="login-title">Connectez-vous</h2>
-            {error}
+            {user.err}
             <Form className="login-form" onSubmit={handleLogin}>
                 <Form.Row>
                     <Col>
@@ -96,7 +66,7 @@ const   Login = () => {
                 <Button type="button" size="lg">Créer un compte</Button>
             </NavLink>
         </div>
-    );
+    );  
 };
 
 export default Login;

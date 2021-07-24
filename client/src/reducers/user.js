@@ -1,17 +1,19 @@
-export default (user = {
+const initialState = {
     isLoading: true,
     err: null,
     user: null
-}, action) => {
+}
+
+export default (user = initialState, action) => {
     switch (action.type) {
-        case "ADD_USER":
-            return {...user, isLoading: false, err: null, user: action.payload};
-        case "DEL_USER":
-            return {...user, isLoading: false, err: null, user: null};
-        case "LOADING":
-            return {...user, isLoading: true, err: null};
-        case "FAILED":
-            return {...user, isLoading: false, err: action.payload, user: null}
+        case "UPDATE_USER":
+            return {isLoading: false, err: null, user: action.payload};
+        case "LOGOUT_USER":
+            return {isLoading: false, err: null, user: null};
+        case "USER_LOADING":
+            return {isLoading: true, err: null, user: null};
+        case "USER_FAILED":
+            return {isLoading: false, err: action.payload, user: null};
         default:
             return user;
     }
